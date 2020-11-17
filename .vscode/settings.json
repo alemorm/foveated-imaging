@@ -1,4 +1,5 @@
 {
     "git.detectSubmodules": false,
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "editor.tabCompletion": "on"
 }
