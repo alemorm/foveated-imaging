@@ -11,10 +11,10 @@ enableGitInfo = true
 canonifyurls = true
 
 [Params]
-    description = "An interactive web application"
-    showTime = false
-    dateFormat = "2006"
-    commit = "https://github.com/alemorm/foveated-imaging/tree/"
+  description = "An interactive web application"
+  showTime = false
+  dateFormat = "2006"
+  commit = "https://github.com/alemorm/foveated-imaging/tree/"
 
 [Author]
   name = "Alejandro Morales & Liang Shi"
