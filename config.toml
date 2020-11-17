@@ -7,8 +7,18 @@ languageCode = "en-us"
 title = "Foveated Imaging"
 theme = "hugo-theme-blueberry-detox"
 enableInlineShortcodes = true
+enableGitInfo = true
 canonifyurls = true
 
 [Params]
     description = "An interactive web application"
-    github = "alemorm"
+    showTime = false
+    dateFormat = "2006"
+    commit = "https://github.com/alemorm/foveated-imaging/tree/"
+
+[Author]
+  name = "Alejandro Morales & Liang Shi"
+  email = "alegmoralesm@gmail.com"
+  gitlab = "amoralesmartinez"
+  github = "alemorm"
+  linkedin = "alegmoralesm"

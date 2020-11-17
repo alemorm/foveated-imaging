@@ -1,20 +1,34 @@
 <footer id="site-footer">
     <div class="container">
-      {{ with .Site.Params.instagram }}
+      {{ with .Site.Author.instagram }}
         <a href="https://www.instagram.com/{{ . }}/" title="Instagram" target="_blank"><span class="tooltip"><i class="fa fa-instagram"></i></span></a>
       {{ end }}
-      {{ with .Site.Params.twitter_name }}
+      {{ with .Site.Author.twitter_name }}
         <a href="https://www.twitter.com/{{ . }}" title="Twitter" target="_blank"><span class="tooltip"><i class="fa fa-twitter"></i></span></a>
       {{ end }}
-      {{ with .Site.Params.facebook }}
+      {{ with .Site.Author.facebook }}
         <a href="https://www.facebook.com/{{ . }}" title="Facebook" target="_blank"><span class="tooltip"><i class="fa fa-facebook"></i></span></a>
       {{ end }}
-      {{ with .Site.Params.github }}
+      {{ with .Site.Author.linkedin }}
+        <a href="https://www.linkedin.com/in/{{ . }}" title="LinkedIn" target="_blank"><span class="tooltip"><i class="fa fa-linkedin"></i></span></a>
+      {{ end }}
+      {{ with .Site.Author.github }}
         <a href="https://www.github.com/{{ . }}" title="GitHub" target="_blank"><span class="tooltip"><i class="fa fa-github"></i></span></a>
       {{ end }}
-      <a href="{{ .Site.BaseURL }}index.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
-      <section>&copy; <a href="{{ .Site.BaseURL }}">{{ .Site.Params.author }}</a> 2017 | All rights reserved</section>
-      <section>Theme by <a href="http://www.jrdnbwmn.com">Jordan Bowman</a>. Generated with <a href="http://gohugo.io/">Hugo</a>.</section>
+      {{ with .Site.Params.rss }}
+        <a href="{{ .Site.BaseURL }}index.xml" title="Get the RSS feed"><span class="tooltip"><i class="fa fa-rss"></i></span></a>
+      {{ end }}      
+      <section class="credits-author-date">
+        <strong>
+          {{ .Site.Author.name }}&nbsp;&bull;&nbsp;{{ .Site.LastChange.Format "2006" }}
+        </strong>
+      </section>
+      <section class="credits-copyright-original">
+        Theme by <a href="http://www.jrdnbwmn.com">Jordan Bowman</a>&nbsp;&bull;&nbsp;Generated with <a href="http://gohugo.io/">Hugo v{{ .Hugo.Version }}</a>
+        {{ with .Site.Params.commit }}
+          &nbsp;&bull;&nbsp;[<a href="{{.}}{{ getenv "GIT_COMMIT_SHA" }}">{{ getenv "GIT_COMMIT_SHA_SHORT" }}</a>]
+        {{ end }}
+      </section>
     </div>
 </footer>
 

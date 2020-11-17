@@ -22,6 +22,5 @@ $$D=\delta+\alpha E=\alpha(E_0+E)\approx0.01(1.3+E)\degree$$
 
 (1) David Van Essen and Charles H. Anderson. Information Processing Strategies and Pathways in the Primate Visual System. Van Essen and Anderson. 1995
 
-
 <!-- Links -->
 [samplelattice]: /materials/sampling_lattice.png "Sampling Lattice"

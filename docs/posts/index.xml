@@ -6,6 +6,8 @@
     <description>Recent content in Posts on Foveated Imaging</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <managingEditor>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</managingEditor>
+    <webMaster>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</webMaster>
     
 	<atom:link href="https://alemorm.github.io/foveated-imaging/posts/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +16,7 @@
       <title>Background</title>
       <link>https://alemorm.github.io/foveated-imaging/posts/background/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
+      <author>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</author>
       <guid>https://alemorm.github.io/foveated-imaging/posts/background/</guid>
       <description>The human visual system uses variable resolution sampling centered at the fovea to discard the vast majority of available visual information (1). This sampling scheme takes advantage of the high density of photoreceptors at the fovea to acquire high resolution information where the gaze is directed, while keeping more eccentric, or peripheral, visual information at a lower resolution. This creates a nearly scaling-invariant system that preserves semantic information about the object visualized as long as the focus is in the same place.</description>
     </item>
