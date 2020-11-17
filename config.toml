@@ -1,0 +1,14 @@
+baseURL = "https://alemorm.github.io/foveated-imaging/"
+contentdir    = "content"
+layoutdir     = "layouts"
+publishdir    = "docs"
+DefaultContentLanguage = "en"
+languageCode = "en-us"
+title = "Foveated Imaging"
+theme = "hugo-theme-blueberry-detox"
+enableInlineShortcodes = true
+canonifyurls = true
+
+[Params]
+    description = "An interactive web application"
+    github = "alemorm"
