@@ -133,7 +133,6 @@ function runPipeline(event) {
   var rect = canvas.getBoundingClientRect();
   const picked_x = event.clientX - rect.left;
   const picked_y = event.clientY - rect.top;
-  console.log(picked_x, picked_y)
 
   var dist
   var radius
@@ -216,10 +215,6 @@ function getArea(i_lower, i_upper, j_lower, j_upper, area){
     red: integralImage[ind_1 + R_OFFSET] + integralImage[ind_2 + R_OFFSET] - integralImage[ind_4 + R_OFFSET] - integralImage[ind_3 + R_OFFSET],
     green: integralImage[ind_1 + G_OFFSET] + integralImage[ind_2 + G_OFFSET] - integralImage[ind_4 + G_OFFSET] - integralImage[ind_3 + G_OFFSET],
     blue: integralImage[ind_1 + B_OFFSET] + integralImage[ind_2 + B_OFFSET] - integralImage[ind_4 + B_OFFSET] - integralImage[ind_3 + B_OFFSET]
-  }
-  if(sum.red<=0){
-    //console.log(i_lower, i_upper, j_lower, j_upper)
-    //console.log(integralImage[ind_1 + R_OFFSET], integralImage[ind_2 + R_OFFSET], integralImage[ind_4 + R_OFFSET], integralImage[ind_3 + R_OFFSET])
   }
   return sum
 }
