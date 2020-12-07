@@ -27,7 +27,7 @@ const srcImage = new Image()
 let imgData = null
 let originalPixels = null
 let currentPixels = null
-
+let integralImage = null
 
 
 /* DOM functions */
@@ -48,6 +48,7 @@ srcImage.onload = function () {
   // Copy the image's dimensions to the canvas, which will show the preview of the edits
   canvas.width = srcImage.width
   canvas.height = srcImage.height
+  console.log(srcImage.width, srcImage.height)
 
   // draw the image at with no offset (0,0) and with the same dimensions as the image
   ctx.drawImage(srcImage, 0, 0, srcImage.width, srcImage.height)
@@ -57,13 +58,50 @@ srcImage.onload = function () {
 
   // .data gets the array of integers with 0-255 range, .slice returns a copy of the array 
   originalPixels = imgData.data.slice()
+  
+  getIntegral()
 
   canvas.addEventListener('click', function(event) {
     runPipeline(event)
   });
 }
 
+function getIntegral() {
 
+  // Create a copy of the array of integers with 0-255 range
+  integralImage =  new Array(srcImage.height * srcImage.width);
+  for(let i=0; i<srcImage.height * srcImage.width; i++){
+    integralImage[i] = originalPixels[i]
+  }
+
+  for (let i = 1; i < srcImage.width; i++){
+    ind = getIndex(i, 0)
+    ind2 = getIndex(i-1, 0)
+    integralImage[ind + R_OFFSET] = originalPixels[ind + R_OFFSET] + integralImage[ind2 + R_OFFSET]
+    integralImage[ind + G_OFFSET] = originalPixels[ind + G_OFFSET] + integralImage[ind2 + G_OFFSET]
+    integralImage[ind + B_OFFSET] = originalPixels[ind + B_OFFSET] + integralImage[ind2 + B_OFFSET]
+  }
+  for (let j = 1; j < srcImage.height; j++){
+    ind = getIndex(0, j)
+    ind2 = getIndex(0, j-1)
+    integralImage[ind + R_OFFSET] = originalPixels[ind + R_OFFSET] + integralImage[ind2 + R_OFFSET]
+    integralImage[ind + G_OFFSET] = originalPixels[ind + G_OFFSET] + integralImage[ind2 + G_OFFSET]
+    integralImage[ind + B_OFFSET] = originalPixels[ind + B_OFFSET] + integralImage[ind2 + B_OFFSET]
+  }
+
+  for (let i = 1; i < srcImage.width; i++) {
+    for (let j = 1; j < srcImage.height; j++) {
+      ind = getIndex(i, j)
+      ind2 = getIndex(i-1, j)
+      ind3 = getIndex(i, j-1)
+      ind4 = getIndex(i-1, j-1)
+      integralImage[ind + R_OFFSET] = originalPixels[ind + R_OFFSET] + integralImage[ind2 + R_OFFSET] + integralImage[ind3 + R_OFFSET] - integralImage[ind4 + R_OFFSET]
+      integralImage[ind + G_OFFSET] = originalPixels[ind + G_OFFSET] + integralImage[ind2 + G_OFFSET] + integralImage[ind3 + G_OFFSET] - integralImage[ind4 + G_OFFSET]
+      integralImage[ind + B_OFFSET] = originalPixels[ind + B_OFFSET] + integralImage[ind2 + B_OFFSET] + integralImage[ind3 + B_OFFSET] - integralImage[ind4 + B_OFFSET]
+    }
+  }
+
+}
 
 /* Filter functions */
 
@@ -95,8 +133,8 @@ function runPipeline(event) {
   var rect = canvas.getBoundingClientRect();
   const picked_x = event.clientX - rect.left;
   const picked_y = event.clientY - rect.top;
-  
   console.log(picked_x, picked_y)
+
   var dist
   var radius
 
@@ -123,45 +161,6 @@ const R_OFFSET = 0
 const G_OFFSET = 1
 const B_OFFSET = 2
 
-function addRed(x, y, value) {
-  const index = getIndex(x, y) + R_OFFSET
-  const currentValue = currentPixels[index]
-  currentPixels[index] = clamp(currentValue + value)
-}
-
-function addGreen(x, y, value) {
-  const index = getIndex(x, y) + G_OFFSET
-  const currentValue = currentPixels[index]
-  currentPixels[index] = clamp(currentValue + value)
-}
-
-function addBlue(x, y, value) {
-  const index = getIndex(x, y) + B_OFFSET
-  const currentValue = currentPixels[index]
-  currentPixels[index] = clamp(currentValue + value)
-}
-
-function addBrightness(x, y, value) {
-  addRed(x, y, value)
-  addGreen(x, y, value)
-  addBlue(x, y, value)
-}
-
-function setGrayscale(x, y) {
-  const redIndex = getIndex(x, y) + R_OFFSET
-  const greenIndex = getIndex(x, y) + G_OFFSET
-  const blueIndex = getIndex(x, y) + B_OFFSET
-
-  const redValue = currentPixels[redIndex]
-  const greenValue = currentPixels[greenIndex]
-  const blueValue = currentPixels[blueIndex]
-
-  const mean = (redValue + greenValue + blueValue) / 3
-
-  currentPixels[redIndex] = clamp(mean)
-  currentPixels[greenIndex] = clamp(mean)
-  currentPixels[blueIndex] = clamp(mean)
-}
 
 function addBlur(x, y, r) {
   let average = (array) => array.reduce((a, b) => a + b) / array.length;
@@ -175,44 +174,18 @@ function addBlur(x, y, r) {
   var blueCollect = []
   var ind
 
-  var i_lower = Math.max(0, x-r)
-  var i_upper = Math.min(srcImage.width, x + r + 1)
-  var j_lower = Math.max(0, y-r)
-  var j_upper = Math.min(srcImage.width, y + r + 1)
+  var i_lower = clamp_edges(x - r, srcImage.width - 1)
+  var i_upper = clamp_edges(x + r, srcImage.width - 1)
+  var j_lower = clamp_edges(y - r, srcImage.height - 1)
+  var j_upper = clamp_edges(y + r, srcImage.height - 1)
+  var area = (j_upper - j_lower + 1) * (i_upper - i_lower + 1)
 
-  for(var i=i_lower; i<i_upper; i++)
-    for(var j=j_lower; j<j_upper; j++){
-      ind = getIndex(i, j)
-      redCollect.push(currentPixels[ind + R_OFFSET])
-      greenCollect.push(currentPixels[ind + G_OFFSET])
-      blueCollect.push(currentPixels[ind + B_OFFSET])
-    }
-
-  currentPixels[redIndex] = clamp(average(redCollect))
-  currentPixels[greenIndex] = clamp(average(greenCollect))
-  currentPixels[blueIndex] = clamp(average(blueCollect))
+  sum = getArea(i_lower, i_upper, j_lower, j_upper, area)
+  currentPixels[redIndex] = clamp(sum.red / area)
+  currentPixels[greenIndex] = clamp(sum.green / area)
+  currentPixels[blueIndex] = clamp(sum.blue / area)
+  
     
-}
-
-function addContrast(x, y, value) {
-  const redIndex = getIndex(x, y) + R_OFFSET
-  const greenIndex = getIndex(x, y) + G_OFFSET
-  const blueIndex = getIndex(x, y) + B_OFFSET
-
-  const redValue = currentPixels[redIndex]
-  const greenValue = currentPixels[greenIndex]
-  const blueValue = currentPixels[blueIndex]
-
-  // Goes from 0 to 2, where 0 to 1 is less contrast and 1 to 2 is more contrast
-  const alpha = (value + 255) / 255 
-
-  const nextRed = alpha * (redValue - 128) + 128
-  const nextGreen = alpha * (greenValue - 128) + 128
-  const nextBlue = alpha * (blueValue - 128) + 128
-
-  currentPixels[redIndex] = clamp(nextRed)
-  currentPixels[greenIndex] = clamp(nextGreen)
-  currentPixels[blueIndex] = clamp(nextBlue)
 }
 
 /* Filter effects - helpers */
@@ -225,4 +198,28 @@ function getIndex(x, y) {
 // Ensure value remain in RGB, 0 - 255
 function clamp(value) {
   return Math.max(0, Math.min(Math.floor(value), 255))
+}
+
+function clamp_edges(value, edge) {
+  return Math.max(1, Math.min(Math.floor(value), edge))
+}
+
+function getArea(i_lower, i_upper, j_lower, j_upper, area){
+  var red
+  var green
+  var blue
+  ind_1 = getIndex(i_lower - 1, j_lower - 1)
+  ind_2 = getIndex(i_upper, j_upper)
+  ind_3 = getIndex(i_lower - 1, j_upper)
+  ind_4 = getIndex(i_upper, j_lower - 1)
+  var sum = {
+    red: integralImage[ind_1 + R_OFFSET] + integralImage[ind_2 + R_OFFSET] - integralImage[ind_4 + R_OFFSET] - integralImage[ind_3 + R_OFFSET],
+    green: integralImage[ind_1 + G_OFFSET] + integralImage[ind_2 + G_OFFSET] - integralImage[ind_4 + G_OFFSET] - integralImage[ind_3 + G_OFFSET],
+    blue: integralImage[ind_1 + B_OFFSET] + integralImage[ind_2 + B_OFFSET] - integralImage[ind_4 + B_OFFSET] - integralImage[ind_3 + B_OFFSET]
+  }
+  if(sum.red<=0){
+    //console.log(i_lower, i_upper, j_lower, j_upper)
+    //console.log(integralImage[ind_1 + R_OFFSET], integralImage[ind_2 + R_OFFSET], integralImage[ind_4 + R_OFFSET], integralImage[ind_3 + R_OFFSET])
+  }
+  return sum
 }
