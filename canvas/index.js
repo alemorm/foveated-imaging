@@ -22,7 +22,6 @@ let originalPixels = null
 let currentPixels = null
 let integralImage = null
 
-
 /* DOM functions */
 
 // When user selects a new image
@@ -51,7 +50,6 @@ srcImage.onload = function () {
 
   // .data gets the array of integers with 0-255 range, .slice returns a copy of the array 
   originalPixels = imgData.data.slice()
-  
   getIntegral()
 
   canvas.addEventListener('mousemove', function(event) {
@@ -116,17 +114,9 @@ function runPipeline(event) {
   // Create a copy of the array of integers with 0-255 range 
   currentPixels = originalPixels.slice()
 
-  // These represent the intensity of the filter, i.e. user wants it to be very red then it is a larger number
-
-  const center_x = Math.floor(srcImage.width / 2)
-  const center_y = Math.floor(srcImage.height / 2)
-
-  //const picked_x = Number(blur_x.value)
-  //const picked_y = Number(blur_y.value)
   var rect = canvas.getBoundingClientRect();
   const picked_x = event.clientX - rect.left;
   const picked_y = event.clientY - rect.top;
-
   var dist
   var radius
 
@@ -153,18 +143,8 @@ const R_OFFSET = 0
 const G_OFFSET = 1
 const B_OFFSET = 2
 
-
 function addBlur(x, y, r) {
   let average = (array) => array.reduce((a, b) => a + b) / array.length;
-
-  const redIndex = getIndex(x, y) + R_OFFSET
-  const greenIndex = getIndex(x, y) + G_OFFSET
-  const blueIndex = getIndex(x, y) + B_OFFSET
-
-  var redCollect = []
-  var greenCollect = []
-  var blueCollect = []
-  var ind
 
   var i_lower = clamp_edges(x - r, srcImage.width - 1)
   var i_upper = clamp_edges(x + r, srcImage.width - 1)
@@ -175,9 +155,7 @@ function addBlur(x, y, r) {
   sum = getArea(i_lower, i_upper, j_lower, j_upper, area)
   currentPixels[redIndex] = clamp(sum.red / area)
   currentPixels[greenIndex] = clamp(sum.green / area)
-  currentPixels[blueIndex] = clamp(sum.blue / area)
-  
-    
+  currentPixels[blueIndex] = clamp(sum.blue / area)    
 }
 
 /* Filter effects - helpers */
@@ -187,19 +165,11 @@ function getIndex(x, y) {
   return (x + y * srcImage.width) * 4
 }
 
-// Ensure value remain in RGB, 0 - 255
-function clamp(value) {
-  return Math.max(0, Math.min(Math.floor(value), 255))
-}
-
 function clamp_edges(value, edge) {
   return Math.max(1, Math.min(Math.floor(value), edge))
 }
 
 function getArea(i_lower, i_upper, j_lower, j_upper, area){
-  var red
-  var green
-  var blue
   ind_1 = getIndex(i_lower - 1, j_lower - 1)
   ind_2 = getIndex(i_upper, j_upper)
   ind_3 = getIndex(i_lower - 1, j_upper)
