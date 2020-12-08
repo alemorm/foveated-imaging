@@ -12,6 +12,13 @@ const canvas = document.getElementById('canvas')
 // Get the 2d (as opposed to "3d") drawing context on the canvas, returns CanvasRenderingContext2D
 const ctx = canvas.getContext('2d')
 
+// Editors for the image
+const blur = document.getElementById('blur')
+
+// Set the listener for whenever one of the effect changes
+blur_x.onchange = runPipeline
+blur_y.onchange = runPipeline
+
 /* Variables setup */
 
 // Similar to document.createElement('img') except we don't need it on the document
@@ -54,7 +61,7 @@ srcImage.onload = function () {
   
   getIntegral()
 
-  canvas.addEventListener('mousemove', function(event) {
+  canvas.addEventListener('click', function(event) {
     runPipeline(event)
   });
 }

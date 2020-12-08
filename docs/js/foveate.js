@@ -118,11 +118,6 @@ function runPipeline(event) {
 
   // These represent the intensity of the filter, i.e. user wants it to be very red then it is a larger number
 
-  const center_x = Math.floor(srcImage.width / 2)
-  const center_y = Math.floor(srcImage.height / 2)
-
-  //const picked_x = Number(blur_x.value)
-  //const picked_y = Number(blur_y.value)
   var rect = canvas.getBoundingClientRect();
   const picked_x = event.clientX - rect.left;
   const picked_y = event.clientY - rect.top;
@@ -161,11 +156,6 @@ function addBlur(x, y, r) {
   const greenIndex = getIndex(x, y) + G_OFFSET
   const blueIndex = getIndex(x, y) + B_OFFSET
 
-  var redCollect = []
-  var greenCollect = []
-  var blueCollect = []
-  var ind
-
   var i_lower = clamp_edges(x - r, srcImage.width - 1)
   var i_upper = clamp_edges(x + r, srcImage.width - 1)
   var j_lower = clamp_edges(y - r, srcImage.height - 1)
@@ -176,8 +166,6 @@ function addBlur(x, y, r) {
   currentPixels[redIndex] = clamp(sum.red / area)
   currentPixels[greenIndex] = clamp(sum.green / area)
   currentPixels[blueIndex] = clamp(sum.blue / area)
-  
-    
 }
 
 /* Filter effects - helpers */
@@ -197,9 +185,6 @@ function clamp_edges(value, edge) {
 }
 
 function getArea(i_lower, i_upper, j_lower, j_upper, area){
-  var red
-  var green
-  var blue
   ind_1 = getIndex(i_lower - 1, j_lower - 1)
   ind_2 = getIndex(i_upper, j_upper)
   ind_3 = getIndex(i_lower - 1, j_upper)

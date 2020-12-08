@@ -1,5 +1,6 @@
 {
     "git.detectSubmodules": false,
     "cmake.configureOnOpen": false,
-    "editor.tabCompletion": "on"
+    "editor.tabCompletion": "on",
+    "python.pythonPath": "/mnt/c/Users/alemo/minicondaWSL/bin/python"
 }
