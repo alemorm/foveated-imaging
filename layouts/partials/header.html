@@ -1,0 +1,11 @@
+<header id="site-header">
+    <div class="container">
+        <a href="{{ .Site.BaseURL }}" alt="{{ .Site.Title }}"><h1 class="blog-title heading">{{ .Site.Title }}</h1></a>
+        <p class="blog-description">{{ .Site.Params.description }}
+    </div>
+    <div style="width:25%; margin-left:auto; margin-right:auto; text-align:center; padding-bottom:20px";>
+        <input type="file" accept="image/*" id="fileinput"/>
+    </div>
+    <canvas id="canvas" width="0" height="0"></canvas>
+    <script src="js/foveate.js"></script>
+</header>
