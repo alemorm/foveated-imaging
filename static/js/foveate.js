@@ -22,6 +22,8 @@ let originalPixels = null
 let currentPixels = null
 let integralImage = null
 
+// Pixel gap between images
+let imagegap = 10
 
 /* DOM functions */
 
@@ -39,20 +41,31 @@ fileinput.onchange = function (e) {
 srcImage.onload = function () {
 
   // Copy the image's dimensions to the canvas, which will show the preview of the edits
-  canvas.width = srcImage.width
+  canvas.width = 2*srcImage.width + imagegap
   canvas.height = srcImage.height
   console.log(srcImage.width, srcImage.height)
 
   // draw the image at with no offset (0,0) and with the same dimensions as the image
   ctx.drawImage(srcImage, 0, 0, srcImage.width, srcImage.height)
+  
+  // // draw the image at with no offset (256,256) and with the same dimensions as the image
+  ctx.drawImage(srcImage, srcImage.width + imagegap, 0, srcImage.width, srcImage.height)
 
   // Get an ImageData object representing the underlying pixel data for the area of the canvas
   imgData = ctx.getImageData(0, 0, srcImage.width, srcImage.height)
+  
+  // Get an ImageData object representing the underlying pixel data for the area of the canvas
+  logimgData = ctx.getImageData(srcImage.width + imagegap, 0, srcImage.width, srcImage.height)
 
   // .data gets the array of integers with 0-255 range, .slice returns a copy of the array 
   originalPixels = imgData.data.slice()
   
+  // .data gets the array of integers with 0-255 range, .slice returns a copy of the array 
+  logPixels = logimgData.data.slice()
+  
   getIntegral()
+
+  showlogPolar()
 
   canvas.addEventListener('mousemove', function(event) {
     runPipeline(event)
@@ -96,6 +109,31 @@ function getIntegral() {
 
 }
 
+function showlogPolar() {
+
+  // Create a copy of the array of integers with 0-255 range 
+  currentlogPixels = imgData.data.slice()
+
+  const center_x = Math.floor(srcImage.width / 2)
+  const center_y = Math.floor(srcImage.height / 2)
+
+  // Zero the current pixels
+  for (let i = 0; i < logimgData.data.length; i++) {
+    logimgData.data[i] = 255
+  }
+
+  for (let i = 0; i < srcImage.width; i++) {
+    for (let j = 0; j < srcImage.height; j++) {
+      logpolar_ij = cartesian2logPolar(i, j, center_x, center_y)
+      logpolarind = getIndex(logpolar_ij.i, logpolar_ij.j)
+      ind = getIndex(i,j)
+      logimgData.data[logpolarind + R_OFFSET] = currentlogPixels[ind + R_OFFSET]
+      logimgData.data[logpolarind + G_OFFSET] = currentlogPixels[ind + G_OFFSET]
+      logimgData.data[logpolarind + B_OFFSET] = currentlogPixels[ind + B_OFFSET]
+    }
+  }
+  ctx.putImageData(logimgData, srcImage.width + imagegap, 0, 0, 0, srcImage.width, srcImage.height)
+}
 /* Filter functions */
 
 // Transfers the changes we made to be displayed on the canvas
@@ -112,23 +150,25 @@ function commitChanges() {
 
 // Updates the canvas with the all of the filter changes
 function runPipeline(event) {
-
-  // Create a copy of the array of integers with 0-255 range 
-  currentPixels = originalPixels.slice()
-
-  // These represent the intensity of the filter, i.e. user wants it to be very red then it is a larger number
-
   var rect = canvas.getBoundingClientRect();
   const picked_x = event.clientX - rect.left;
   const picked_y = event.clientY - rect.top;
 
+  // Make sure the foveating happens only on the image
+  if (picked_x > srcImage.width || picked_y > srcImage.height) {
+    return
+  }
+
+  // Create a copy of the array of integers with 0-255 range 
+  currentPixels = originalPixels.slice()
+  
   var dist
   var radius
 
   // For every pixel of the src image
   for (let i = 0; i < srcImage.height; i++) {
     for (let j = 0; j < srcImage.width; j++) {
-      
+
       // Do the effects
       dist = Math.hypot(picked_x - j, picked_y - i)
       radius = Math.floor(0.05 * dist)
@@ -140,7 +180,6 @@ function runPipeline(event) {
   commitChanges()
 }
 
-
 /* Filter effects */
 
 // The image is stored as a 1d array with red first, then green, and blue 
@@ -148,10 +187,7 @@ const R_OFFSET = 0
 const G_OFFSET = 1
 const B_OFFSET = 2
 
-
 function addBlur(x, y, r) {
-  let average = (array) => array.reduce((a, b) => a + b) / array.length;
-
   const redIndex = getIndex(x, y) + R_OFFSET
   const greenIndex = getIndex(x, y) + G_OFFSET
   const blueIndex = getIndex(x, y) + B_OFFSET
@@ -195,4 +231,22 @@ function getArea(i_lower, i_upper, j_lower, j_upper, area){
     blue: integralImage[ind_1 + B_OFFSET] + integralImage[ind_2 + B_OFFSET] - integralImage[ind_4 + B_OFFSET] - integralImage[ind_3 + B_OFFSET]
   }
   return sum
+}
+
+// Log Polar Transform
+function cartesian2logPolar(x, y, center_x, center_y) {
+  x_pos = center_x - x
+  y_pos = center_y - y
+  logdistance = Math.log(Math.sqrt(x_pos**2 + y_pos**2))
+  maxlogdistance = Math.log(Math.sqrt((srcImage.width/2)**2 + (srcImage.height/2)**2))
+  i = Math.floor((logdistance/maxlogdistance)*srcImage.width)
+  
+  radians = Math.atan2(y_pos, x_pos)
+  if (radians < 0) {
+    j = Math.floor(((radians + Math.PI)/Math.PI)*srcImage.height/2) + srcImage.height/2
+  } else {
+    j = Math.floor((radians/Math.PI)*srcImage.height/2)
+  }
+  logpolar_ij = { i:i, j:j }
+  return logpolar_ij
 }
