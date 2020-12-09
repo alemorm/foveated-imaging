@@ -5,12 +5,12 @@ const fileinput = document.getElementById('fileinput')
 // Used to show the effects of the image edit
 const canvas = document.getElementById('canvas')
 
-//canvas.addEventListener('click', function(event) {
-//  pick(event, selectedColor);
-//});
-
 // Get the 2d (as opposed to "3d") drawing context on the canvas, returns CanvasRenderingContext2D
 const ctx = canvas.getContext('2d')
+
+// Pixel gap between images and text
+let imagegap = 10
+let textgap = 50
 
 /* Variables setup */
 
@@ -21,9 +21,6 @@ let imgData = null
 let originalPixels = null
 let currentPixels = null
 let integralImage = null
-
-// Pixel gap between images
-let imagegap = 10
 
 /* DOM functions */
 
@@ -42,27 +39,30 @@ srcImage.onload = function () {
 
   // Copy the image's dimensions to the canvas, which will show the preview of the edits
   canvas.width = 2*srcImage.width + imagegap
-  canvas.height = srcImage.height
-  console.log(srcImage.width, srcImage.height)
+  canvas.height = srcImage.height + textgap
+  
+  // Aling text to center of image
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top"
+
+  // Set the canvas font
+  ctx.font = textgap*0.5 + "px montserrat"
+
+  // Label the original image
+  ctx.fillText("Foveated Image", srcImage.width/2, textgap*0.2)
+  
+  // Label the original image
+  ctx.fillText("Log-Polar Image", 3*srcImage.width/2 + imagegap, textgap*0.2)
 
   // draw the image at with no offset (0,0) and with the same dimensions as the image
-  ctx.drawImage(srcImage, 0, 0, srcImage.width, srcImage.height)
-  
-  // // draw the image at with no offset (256,256) and with the same dimensions as the image
-  ctx.drawImage(srcImage, srcImage.width + imagegap, 0, srcImage.width, srcImage.height)
+  ctx.drawImage(srcImage, 0, textgap, srcImage.width, srcImage.height + textgap)
 
   // Get an ImageData object representing the underlying pixel data for the area of the canvas
-  imgData = ctx.getImageData(0, 0, srcImage.width, srcImage.height)
+  imgData = ctx.getImageData(0, textgap, srcImage.width, srcImage.height)
   
-  // Get an ImageData object representing the underlying pixel data for the area of the canvas
-  logimgData = ctx.getImageData(srcImage.width + imagegap, 0, srcImage.width, srcImage.height)
-
   // .data gets the array of integers with 0-255 range, .slice returns a copy of the array 
   originalPixels = imgData.data.slice()
-  
-  // .data gets the array of integers with 0-255 range, .slice returns a copy of the array 
-  logPixels = logimgData.data.slice()
-  
+
   getIntegral()
 
   showlogPolar()
@@ -114,12 +114,15 @@ function showlogPolar() {
   // Create a copy of the array of integers with 0-255 range 
   currentlogPixels = imgData.data.slice()
 
+  // Create transparent (alpha=0) black image data object with same dimensions
+  logImage = new ImageData(srcImage.width, srcImage.height)
+
   const center_x = Math.floor(srcImage.width / 2)
   const center_y = Math.floor(srcImage.height / 2)
 
-  // Zero the current pixels
-  for (let i = 0; i < logimgData.data.length; i++) {
-    logimgData.data[i] = 255
+  // Reset the alpha values to fully opaque for the pixels
+  for (let i = 0; i < logImage.data.length; i+=4) {
+    logImage.data[i + 3] = 255
   }
 
   for (let i = 0; i < srcImage.width; i++) {
@@ -127,12 +130,14 @@ function showlogPolar() {
       logpolar_ij = cartesian2logPolar(i, j, center_x, center_y)
       logpolarind = getIndex(logpolar_ij.i, logpolar_ij.j)
       ind = getIndex(i,j)
-      logimgData.data[logpolarind + R_OFFSET] = currentlogPixels[ind + R_OFFSET]
-      logimgData.data[logpolarind + G_OFFSET] = currentlogPixels[ind + G_OFFSET]
-      logimgData.data[logpolarind + B_OFFSET] = currentlogPixels[ind + B_OFFSET]
+      logImage.data[logpolarind + R_OFFSET] = currentlogPixels[ind + R_OFFSET]
+      logImage.data[logpolarind + G_OFFSET] = currentlogPixels[ind + G_OFFSET]
+      logImage.data [logpolarind + B_OFFSET] = currentlogPixels[ind + B_OFFSET]
     }
   }
-  ctx.putImageData(logimgData, srcImage.width + imagegap, 0, 0, 0, srcImage.width, srcImage.height)
+
+  // draw the image at canvas with offset (srcImage.width + imagegap, srcImage.height)
+  ctx.putImageData(logImage, logImage.width + imagegap, textgap, 0, 0, logImage.width, logImage.height)
 }
 /* Filter functions */
 
@@ -145,7 +150,7 @@ function commitChanges() {
   }
 
   // Update the 2d rendering canvas with the image we just updated so the user can see
-  ctx.putImageData(imgData, 0, 0, 0, 0, srcImage.width, srcImage.height)
+  ctx.putImageData(imgData, 0, textgap, 0, 0, srcImage.width, srcImage.height)
 }
 
 // Updates the canvas with the all of the filter changes
@@ -155,7 +160,7 @@ function runPipeline(event) {
   const picked_y = event.clientY - rect.top;
 
   // Make sure the foveating happens only on the image
-  if (picked_x > srcImage.width || picked_y > srcImage.height) {
+  if (picked_x > srcImage.width || picked_y < textgap) {
     return
   }
 
@@ -182,7 +187,7 @@ function runPipeline(event) {
 
 /* Filter effects */
 
-// The image is stored as a 1d array with red first, then green, and blue 
+// The image is stored as a 1d array with red first, then green, and blue (with alpha values after)
 const R_OFFSET = 0
 const G_OFFSET = 1
 const B_OFFSET = 2
