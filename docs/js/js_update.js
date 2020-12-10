@@ -20,18 +20,19 @@ function runPipeline(event) {
   var redIndex, greenIndex, blueIndex
 
   // For every pixel of the src image
-  for (let i = 0; i < srcImage.height; i++) {
-    for (let j = 0; j < srcImage.width; j++) {
-      redIndex = getIndex(j, i) + R_OFFSET
-      greenIndex = getIndex(j, i) + G_OFFSET
-      blueIndex = getIndex(j, i) + B_OFFSET
-      // Do the effects
-      dist = Math.hypot(picked_x - j, picked_y - i)
+  for (let i = 0; i < srcImage.widtt; i++) {
+    for (let j = 0; j < srcImage.height; j++) {
+      redIndex = getIndex(i, j) + R_OFFSET
+      greenIndex = getIndex(i, j) + G_OFFSET
+      blueIndex = getIndex(i, j) + B_OFFSET
+      
+      // Get distance from cursor
+      dist = Math.hypot(picked_x - i, picked_y - j)
       radius = Math.floor(0.05 * dist)
       diff = 0.05 * dist - radius
 
-      sum_1 = addBlur(j, i, radius)
-      sum_2 = addBlur(j, i, radius + 1)
+      sum_1 = addBlur(i, j, radius)
+      sum_2 = addBlur(i, j, radius + 1)
 
       currentPixels[redIndex] = (1 - diff) * clamp(sum_1.red) + diff * clamp(sum_2.red)
       currentPixels[greenIndex] = (1 - diff) * clamp(sum_1.green) + diff * clamp(sum_2.green)

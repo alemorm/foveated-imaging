@@ -8,10 +8,6 @@ const canvas = document.getElementById('canvas')
 // Get the 2d (as opposed to "3d") drawing context on the canvas, returns CanvasRenderingContext2D
 const ctx = canvas.getContext('2d')
 
-// Pixel gap between images and text
-let imagegap = 10
-let textgap = 50
-
 /* Variables setup */
 
 // Similar to document.createElement('img') except we don't need it on the document
@@ -21,6 +17,16 @@ let imgData = null
 let originalPixels = null
 let currentPixels = null
 let integralImage = null
+let foveatedradius = 0.05
+
+// The image is stored as a 1d array with red first, then green, and blue (with alpha values after)
+const R_OFFSET = 0
+const G_OFFSET = 1
+const B_OFFSET = 2
+
+// Pixel gap between images and text
+let imagegap = 10
+let textgap = 50
 
 /* DOM functions */
 
@@ -168,28 +174,31 @@ function commitChanges() {
 function runPipeline(event) {
   var rect = canvas.getBoundingClientRect();
   const picked_x = event.clientX - rect.left;
-  const picked_y = event.clientY - rect.top;
+  const picked_y = event.clientY - (rect.top + textgap);
 
   // Make sure the foveating happens only on the image
-  if (picked_x > srcImage.width || picked_y < textgap) {
+  if (picked_x > srcImage.width || picked_y < 0) {
     return
   }
 
   // Create a copy of the array of integers with 0-255 range 
   currentPixels = originalPixels.slice()
   
-  var dist
-  var radius
+  var dist, radius, diff
 
   // For every pixel of the src image
-  for (let i = 0; i < srcImage.height; i++) {
-    for (let j = 0; j < srcImage.width; j++) {
+  for (let i = 0; i < srcImage.width; i++) {
+    for (let j = 0; j < srcImage.height; j++) {
+      redIndex = getIndex(i, j) + R_OFFSET
+      greenIndex = getIndex(i, j) + G_OFFSET
+      blueIndex = getIndex(i, j) + B_OFFSET
 
-      // Do the effects
-      dist = Math.hypot(picked_x - j, picked_y - i)
-      radius = Math.floor(0.05 * dist)
+      // Get cursor distance
+      dist = Math.hypot(picked_x - i, picked_y - j)
+      radius = Math.floor(foveatedradius * dist)
 
-      addBlur(j, i, radius)
+      addBlur(i, j, radius)
+      // addinterpBlur(i, j, radius, dist)
     }
   }
 
@@ -198,11 +207,7 @@ function runPipeline(event) {
 
 /* Filter effects */
 
-// The image is stored as a 1d array with red first, then green, and blue (with alpha values after)
-const R_OFFSET = 0
-const G_OFFSET = 1
-const B_OFFSET = 2
-
+// Fast blurring
 function addBlur(x, y, r) {
   const redIndex = getIndex(x, y) + R_OFFSET
   const greenIndex = getIndex(x, y) + G_OFFSET
@@ -212,12 +217,43 @@ function addBlur(x, y, r) {
   var i_upper = clamp_edges(x + r, srcImage.width - 1)
   var j_lower = clamp_edges(y - r, srcImage.height - 1)
   var j_upper = clamp_edges(y + r, srcImage.height - 1)
-  var area = (j_upper - j_lower + 1) * (i_upper - i_lower + 1)
+  var area = (j_upper - j_lower + 1)*(i_upper - i_lower + 1)
+  
+  sum = getArea(i_lower, i_upper, j_lower, j_upper)
 
-  sum = getArea(i_lower, i_upper, j_lower, j_upper, area)
-  currentPixels[redIndex] = clamp(sum.red / area)
-  currentPixels[greenIndex] = clamp(sum.green / area)
-  currentPixels[blueIndex] = clamp(sum.blue / area)
+  currentPixels[redIndex] = clamp(sum.red/area)
+  currentPixels[greenIndex] = clamp(sum.green/area)
+  currentPixels[blueIndex] = clamp(sum.blue/area)
+}
+
+// Interpolated blurring (slower)
+function addinterpBlur(x, y, r, dist) {
+  
+  // Distance difference from fovea
+  diff = foveatedradius*dist - r
+
+  const redIndex = getIndex(x, y) + R_OFFSET
+  const greenIndex = getIndex(x, y) + G_OFFSET
+  const blueIndex = getIndex(x, y) + B_OFFSET
+
+  var i_lower_1 = clamp_edges(x - r, srcImage.width - 1)
+  var i_upper_1 = clamp_edges(x + r, srcImage.width - 1)
+  var j_lower_1 = clamp_edges(y - r, srcImage.height - 1)
+  var j_upper_1 = clamp_edges(y + r, srcImage.height - 1)
+  var area_1 = (j_upper_1 - j_lower_1 + 1)*(i_upper_1 - i_lower_1 + 1)
+  
+  var i_lower_2 = clamp_edges(x - (r + 1), srcImage.width - 1)
+  var i_upper_2 = clamp_edges(x + (r + 1), srcImage.width - 1)
+  var j_lower_2 = clamp_edges(y - (r + 1), srcImage.height - 1)
+  var j_upper_2 = clamp_edges(y + (r + 1), srcImage.height - 1)
+  var area_2 = (j_upper_2 - j_lower_2 + 1)*(i_upper_2 - i_lower_2 + 1)
+
+  sum_1 = getArea(i_lower_1, i_upper_1, j_lower_1, j_upper_1)
+  sum_2 = getArea(i_lower_2, i_upper_2, j_lower_2, j_upper_2)
+
+  currentPixels[redIndex] = (1 - diff)*clamp(sum_1.red/area_1) + diff*clamp(sum_2.red/area_2)
+  currentPixels[greenIndex] = (1 - diff)*clamp(sum_1.green/area_1) + diff*clamp(sum_2.green/area_2)
+  currentPixels[blueIndex] = (1 - diff)*clamp(sum_1.blue/area_1) + diff*clamp(sum_2.blue/area_2)
 }
 
 /* Filter effects - helpers */
@@ -236,11 +272,12 @@ function clamp_edges(value, edge) {
   return Math.max(1, Math.min(Math.floor(value), edge))
 }
 
-function getArea(i_lower, i_upper, j_lower, j_upper, area){
+function getArea(i_lower, i_upper, j_lower, j_upper){
   ind_1 = getIndex(i_lower - 1, j_lower - 1)
   ind_2 = getIndex(i_upper, j_upper)
   ind_3 = getIndex(i_lower - 1, j_upper)
   ind_4 = getIndex(i_upper, j_lower - 1)
+  
   var sum = {
     red: integralImage[ind_1 + R_OFFSET] + integralImage[ind_2 + R_OFFSET] - integralImage[ind_4 + R_OFFSET] - integralImage[ind_3 + R_OFFSET],
     green: integralImage[ind_1 + G_OFFSET] + integralImage[ind_2 + G_OFFSET] - integralImage[ind_4 + G_OFFSET] - integralImage[ind_3 + G_OFFSET],
@@ -254,14 +291,14 @@ function cartesian2logPolar(x, y, center_x, center_y) {
   x_pos = center_x - x
   y_pos = center_y - y
 
-  // Radial distance from image center
+  // Logarithmic (base e) radial distance from image center
   r = Math.sqrt(x_pos**2 + y_pos**2)
   rmin = 1
   rmax = Math.sqrt((srcImage.width/2)**2 + (srcImage.height/2)**2)
   k = (srcImage.width - 1)/ Math.log(rmax/rmin)
   i = Math.floor(k*Math.log(r/rmin))
   
-  // In radians
+  // Theta angle in radians
   theta = Math.atan2(y_pos, x_pos)
   if (theta < 0) {
     j = Math.floor(((theta + Math.PI)/Math.PI)*srcImage.height/2) + srcImage.height/2
