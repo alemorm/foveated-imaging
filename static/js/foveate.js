@@ -1,6 +1,10 @@
 /* DOM setup */
 
+// Get file input element
 const fileinput = document.getElementById('fileinput')
+
+// Get interpolation switch element
+const interpswitch = document.getElementById('interpswitch')
 
 // Used to show the effects of the image edit
 const canvas = document.getElementById('canvas')
@@ -18,6 +22,7 @@ let originalPixels = null
 let currentPixels = null
 let integralImage = null
 let foveatedradius = 0.05
+var useInterp = Boolean(false)
 
 // The image is stored as a 1d array with red first, then green, and blue (with alpha values after)
 const R_OFFSET = 0
@@ -38,6 +43,16 @@ fileinput.onchange = function (e) {
 
     // Set the src of the new Image() we created in javascript
     srcImage.src = URL.createObjectURL(e.target.files[0])
+  }
+}
+
+// When user changes the interpolation
+interpswitch.onchange = function () {
+  // Check the state of the interpolation switch
+  if (this.checked) {
+    useInterp = Boolean(true)
+  } else {
+    useInterp = Boolean(false)
   }
 }
 
@@ -112,7 +127,6 @@ function getIntegral() {
       integralImage[ind + B_OFFSET] = originalPixels[ind + B_OFFSET] + integralImage[ind2 + B_OFFSET] + integralImage[ind3 + B_OFFSET] - integralImage[ind4 + B_OFFSET]
     }
   } 
-
 }
 
 function showlogPolar() {
@@ -184,7 +198,7 @@ function runPipeline(event) {
   // Create a copy of the array of integers with 0-255 range 
   currentPixels = originalPixels.slice()
   
-  var dist, radius, diff
+  var dist, radius
 
   // For every pixel of the src image
   for (let i = 0; i < srcImage.width; i++) {
@@ -197,8 +211,11 @@ function runPipeline(event) {
       dist = Math.hypot(picked_x - i, picked_y - j)
       radius = Math.floor(foveatedradius * dist)
 
-      addBlur(i, j, radius)
-      // addinterpBlur(i, j, radius, dist)
+      if (useInterp) {
+        addinterpBlur(i, j, radius, dist)
+      } else {
+        addBlur(i, j, radius)
+      } 
     }
   }
 

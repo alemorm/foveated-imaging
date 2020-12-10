@@ -9,8 +9,6 @@ This variable sampling is illustrated in the sampling lattice shown in **Figure 
 
 $$D=\delta+\alpha E=\alpha(E_0+E)\approx0.01(1.3+E)\degree$$
 
----
-
 ![samplelattice]
 
 {{< centertxt >}}
@@ -18,10 +16,9 @@ $$D=\delta+\alpha E=\alpha(E_0+E)\approx0.01(1.3+E)\degree$$
 {{< /centertxt >}}
 
 ---
+{{< centertxt >}} ### References {{< /centertxt >}}
 
-### References
-
-(1) David Van Essen and Charles H. Anderson. Information Processing Strategies and Pathways in the Primate Visual System. Van Essen and Anderson. 1995
+1. David Van Essen and Charles H. Anderson. Information Processing Strategies and Pathways in the Primate Visual System. Van Essen and Anderson. 1995
 
 <!-- Links -->
 [samplelattice]: /materials/sampling_lattice.png#center "Sampling Lattice"
