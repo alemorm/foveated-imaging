@@ -137,11 +137,15 @@ function showlogPolar() {
   // Create transparent (alpha=0) black image data object with same dimensions
   logImage = new ImageData(srcImage.width, srcImage.height)
 
+  // Define log-polar range of distance values
+  logpolarExp = Math.log(srcImage.width/2)/(srcImage.width/2)
+  logpolarRange = Array.from(Array(srcImage.width/2), (num, index) => 2**index);
+
   const center_x = Math.floor(srcImage.width/2)
   const center_y = Math.floor(srcImage.height/2)
 
-  // console.log(srcImage.width, srcImage.height)
-  // console.log(center_x, center_y)
+  console.log(srcImage.width, srcImage.height)
+  console.log(center_x, center_y)
 
   // Reset the alpha values to fully opaque for the pixels
   for (let i = 0; i < logImage.data.length; i+=4) {
@@ -312,7 +316,7 @@ function cartesian2logPolar(x, y, center_x, center_y) {
   r = Math.sqrt(x_pos**2 + y_pos**2)
   rmin = 1
   rmax = Math.sqrt((srcImage.width/2)**2 + (srcImage.height/2)**2)
-  k = (srcImage.width - 1)/ Math.log(rmax/rmin)
+  k = (srcImage.width - 1)/Math.log(rmax/rmin)
   i = Math.floor(k*Math.log(r/rmin))
   
   // Theta angle in radians

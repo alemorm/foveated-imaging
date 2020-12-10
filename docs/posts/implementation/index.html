@@ -72,7 +72,7 @@
 
 </div>
 
-<p>The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ( \(n_{pixels} >1e^6\) ). The interpolated blurring method smoothes the foveated rendering by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.</p>
+<p>The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ( \(n_{pixels}>1e^6\) ). The interpolated blurring method smoothes the foveated rendering by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.</p>
 <p><img src="https://alemorm.github.io/foveated-imaging/materials/interpolation_arrows.png#center" alt="interpolation" title="Interpolation Types"></p>
 <div style="text-align: center">
     <strong>Figure 2</strong>. Original image with the types of interpolation. Red arrows show regions where different adjacent low-pass filters were applied. Black circles are the fovea location. The interpolated method smoothed out the transition between filters.
@@ -92,6 +92,20 @@
 
 <hr>
 <div style="text-align: center">
+    <h3 id="log-polar-transformation">Log-Polar Transformation</h3>
+
+</div>
+
+<p>We computed the <a href="https://en.wikipedia.org/wiki/Log-polar_coordinates">log-polar transformation</a> of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping performed is shown in <strong>Figure 4</strong>.</p>
+<p>$$\rho=\log{\sqrt{x^2 + y^2}}$$
+$$\theta=atan2(y,x)$$</p>
+<p><img src="https://alemorm.github.io/foveated-imaging/materials/log_polar.png#center" alt="logpolar" title="Log-Polar Transform"></p>
+<div style="text-align: center">
+    <strong>Figure 4</strong>. Log-Polar Transform from Cartesian coordinates.
+</div>
+
+<hr>
+<div style="text-align: center">
     <h3 id="references">References</h3>
 
 </div>
@@ -99,6 +113,8 @@
 <ol>
 <li>Low-pass filters (<a href="https://en.wikipedia.org/wiki/Low-pass_filter">https://en.wikipedia.org/wiki/Low-pass_filter</a>)</li>
 <li>Summed-area tables (<a href="https://en.wikipedia.org/wiki/Summed-area_table">https://en.wikipedia.org/wiki/Summed-area_table</a>)</li>
+<li>Log-polar coordinates (<a href="https://en.wikipedia.org/wiki/Log-polar_coordinates">https://en.wikipedia.org/wiki/Log-polar_coordinates</a>)</li>
+<li>Log-polar image <a href="https://sthoduka.github.io/imreg_fmt/docs/log-polar-transform/">https://sthoduka.github.io/imreg_fmt/docs/log-polar-transform/</a></li>
 </ol>
 <!-- raw HTML omitted -->
 
@@ -161,7 +177,7 @@
       <section class="credits-copyright-original">
         Theme by <a href="http://www.jrdnbwmn.com">Jordan Bowman</a>&nbsp;&bull;&nbsp;Generated with <a href="http://gohugo.io/">Hugo v0.72.0</a>
         
-          &nbsp;&bull;&nbsp;[<a href="https://github.com/alemorm/foveated-imaging/tree/14fcfb9ef859788f8f2beda21ac32f88445c9e77">14fcfb9</a>]
+          &nbsp;&bull;&nbsp;[<a href="https://github.com/alemorm/foveated-imaging/tree/15fa436e6f70d19fdf2a65fee02258fa8d4cbe91">15fa436</a>]
         
       </section>
     </div>

@@ -11,7 +11,7 @@ This foveated rendering web application was implemented with [JavaScript][foveat
 
 {{< centertxt >}} ### Interpolation {{< /centertxt >}}
 
-The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ({{< math.inline >}} \(n_{pixels} >1e^6\) {{< /math.inline >}}). The interpolated blurring method smoothes the foveated rendering by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.
+The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ({{< math.inline >}} \(n_{pixels}>1e^6\) {{< /math.inline >}}). The interpolated blurring method smoothes the foveated rendering by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.
 
 ![interpolation]
 
@@ -32,15 +32,34 @@ Iteratively applying low-pass filters to every pixel in an image, potentially pe
 {{< /centertxt >}}
 
 ---
+
+{{< centertxt >}} ### Log-Polar Transformation {{< /centertxt >}}
+
+We computed the [log-polar transformation][logpolarwiki] of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping performed is shown in **Figure 4**.
+
+$$\rho=\log{\sqrt{x^2 + y^2}}$$
+$$\theta=atan2(y,x)$$
+
+![logpolar]
+
+{{< centertxt >}}
+**Figure 4**. Log-Polar Transform from Cartesian coordinates.
+{{< /centertxt >}}
+
+---
 {{< centertxt >}} ### References {{< /centertxt >}}
 
 1. Low-pass filters (https://en.wikipedia.org/wiki/Low-pass_filter)
 2. Summed-area tables (https://en.wikipedia.org/wiki/Summed-area_table)
+3. Log-polar coordinates (https://en.wikipedia.org/wiki/Log-polar_coordinates)
+4. Log-polar image https://sthoduka.github.io/imreg_fmt/docs/log-polar-transform/
 
 <!-- Links -->
 [foveatejs]: /js/foveate.js
 [background]: /posts/background
 [interpolation]: /materials/interpolation_arrows.png#center "Interpolation Types"
 [summedareatable]: /materials/summed_area_table.png#center "Summed Area Table"
+[logpolar]: /materials/log_polar.png#center "Log-Polar Transform"
 [lowpasswiki]: https://en.wikipedia.org/wiki/Low-pass_filter
 [summedareawiki]: https://en.wikipedia.org/wiki/Summed-area_table
+[logpolarwiki]: https://en.wikipedia.org/wiki/Log-polar_coordinates
