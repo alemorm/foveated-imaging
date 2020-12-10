@@ -105,7 +105,7 @@ function getIntegral() {
       integralImage[ind + G_OFFSET] = originalPixels[ind + G_OFFSET] + integralImage[ind2 + G_OFFSET] + integralImage[ind3 + G_OFFSET] - integralImage[ind4 + G_OFFSET]
       integralImage[ind + B_OFFSET] = originalPixels[ind + B_OFFSET] + integralImage[ind2 + B_OFFSET] + integralImage[ind3 + B_OFFSET] - integralImage[ind4 + B_OFFSET]
     }
-  }
+  } 
 
 }
 
@@ -117,8 +117,11 @@ function showlogPolar() {
   // Create transparent (alpha=0) black image data object with same dimensions
   logImage = new ImageData(srcImage.width, srcImage.height)
 
-  const center_x = Math.floor(srcImage.width / 2)
-  const center_y = Math.floor(srcImage.height / 2)
+  const center_x = Math.floor(srcImage.width/2)
+  const center_y = Math.floor(srcImage.height/2)
+
+  // console.log(srcImage.width, srcImage.height)
+  // console.log(center_x, center_y)
 
   // Reset the alpha values to fully opaque for the pixels
   for (let i = 0; i < logImage.data.length; i+=4) {
@@ -130,9 +133,17 @@ function showlogPolar() {
       logpolar_ij = cartesian2logPolar(i, j, center_x, center_y)
       logpolarind = getIndex(logpolar_ij.i, logpolar_ij.j)
       ind = getIndex(i,j)
-      logImage.data[logpolarind + R_OFFSET] = currentlogPixels[ind + R_OFFSET]
-      logImage.data[logpolarind + G_OFFSET] = currentlogPixels[ind + G_OFFSET]
-      logImage.data [logpolarind + B_OFFSET] = currentlogPixels[ind + B_OFFSET]
+      // if ((i <= (center_x + 1) && j <= (center_y + 1)) && (i >= (center_x - 1) && j >= (center_y - 1))) {
+      if ((i == center_x) && (j == center_y)) {
+        centerind = getIndex(0, srcImage.height-1)
+        logImage.data[centerind + R_OFFSET] = currentlogPixels[ind + R_OFFSET]
+        logImage.data[centerind + G_OFFSET] = currentlogPixels[ind + G_OFFSET]
+        logImage.data[centerind + B_OFFSET] = currentlogPixels[ind + B_OFFSET]
+      } else {
+        logImage.data[logpolarind + R_OFFSET] = currentlogPixels[ind + R_OFFSET]
+        logImage.data[logpolarind + G_OFFSET] = currentlogPixels[ind + G_OFFSET]
+        logImage.data[logpolarind + B_OFFSET] = currentlogPixels[ind + B_OFFSET]
+      }
     }
   }
 
@@ -242,15 +253,20 @@ function getArea(i_lower, i_upper, j_lower, j_upper, area){
 function cartesian2logPolar(x, y, center_x, center_y) {
   x_pos = center_x - x
   y_pos = center_y - y
-  logdistance = Math.log(Math.sqrt(x_pos**2 + y_pos**2))
-  maxlogdistance = Math.log(Math.sqrt((srcImage.width/2)**2 + (srcImage.height/2)**2))
-  i = Math.floor((logdistance/maxlogdistance)*srcImage.width)
+
+  // Radial distance from image center
+  r = Math.sqrt(x_pos**2 + y_pos**2)
+  rmin = 1
+  rmax = Math.sqrt((srcImage.width/2)**2 + (srcImage.height/2)**2)
+  k = (srcImage.width - 1)/ Math.log(rmax/rmin)
+  i = Math.floor(k*Math.log(r/rmin))
   
-  radians = Math.atan2(y_pos, x_pos)
-  if (radians < 0) {
-    j = Math.floor(((radians + Math.PI)/Math.PI)*srcImage.height/2) + srcImage.height/2
+  // In radians
+  theta = Math.atan2(y_pos, x_pos)
+  if (theta < 0) {
+    j = Math.floor(((theta + Math.PI)/Math.PI)*srcImage.height/2) + srcImage.height/2
   } else {
-    j = Math.floor((radians/Math.PI)*srcImage.height/2)
+    j = Math.floor((theta/Math.PI)*srcImage.height/2)
   }
   logpolar_ij = { i:i, j:j }
   return logpolar_ij
