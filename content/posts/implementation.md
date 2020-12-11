@@ -37,7 +37,7 @@ Iteratively applying low-pass filters to every pixel in an image, potentially pe
 
 We computed the [log-polar transformation][logpolarwiki] of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping performed is shown in **Figure 4**.
 
-$$\rho=\log{\sqrt{x^2 + y^2}}$$
+$$\rho=\ln{\sqrt{x^2 + y^2}}$$
 $$\theta=atan2(y,x)$$
 
 ![logpolar]

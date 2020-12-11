@@ -138,8 +138,8 @@ function showlogPolar() {
   logImage = new ImageData(srcImage.width, srcImage.height)
 
   // Define log-polar range of distance values
-  logpolarExp = Math.log(srcImage.width/2)/(srcImage.width/2)
-  logpolarRange = Array.from(Array(srcImage.width/2), (num, index) => 2**index);
+  // logpolarExp = Math.log(srcImage.width/2)/(srcImage.width/2)
+  // logpolarRange = Array.from(Array(srcImage.width/2), (num, index) => 2**index);
 
   const center_x = Math.floor(srcImage.width/2)
   const center_y = Math.floor(srcImage.height/2)
