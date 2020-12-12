@@ -35,10 +35,14 @@ Iteratively applying low-pass filters to every pixel in an image, potentially pe
 
 {{< centertxt >}} ### Log-Polar Transformation {{< /centertxt >}}
 
-We computed the [log-polar transformation][logpolarwiki] of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping performed is shown in **Figure 4**.
+We computed the [log-polar transformation][logpolarwiki] of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping from Cartesian coordinates to log-polar coordinates is shown in **Equation 1** and **Figure 4**.
 
-$$\rho=\ln{\sqrt{x^2 + y^2}}$$
-$$\theta=atan2(y,x)$$
+$$\rho=\ln{\sqrt{(x-x_c)^2 + (y-y_c)^2}}$$
+$$\theta=atan2(y-y_c,x-x_c)$$
+
+{{< centertxt >}}
+**Equation 1**. Mapping from Cartesian coordinates to Log-Polar coordinates. {{< math.inline >}} The distance from the fovea along the \\(x\\) and \\(y\\) axes is denoted by \\(x-x_c\\) and \\(y-y_c\\){{< /math.inline >}} respectively.
+{{< /centertxt >}}
 
 ![logpolar]
 

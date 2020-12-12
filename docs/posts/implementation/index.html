@@ -96,9 +96,13 @@
 
 </div>
 
-<p>We computed the <a href="https://en.wikipedia.org/wiki/Log-polar_coordinates">log-polar transformation</a> of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping performed is shown in <strong>Figure 4</strong>.</p>
-<p>$$\rho=\ln{\sqrt{x^2 + y^2}}$$
-$$\theta=atan2(y,x)$$</p>
+<p>We computed the <a href="https://en.wikipedia.org/wiki/Log-polar_coordinates">log-polar transformation</a> of the input image (3) to illustrate the projection performed in the primary visual cortex. The mapping from Cartesian coordinates to log-polar coordinates is shown in <strong>Equation 1</strong> and <strong>Figure 4</strong>.</p>
+<p>$$\rho=\ln{\sqrt{(x-x_c)^2 + (y-y_c)^2}}$$
+$$\theta=atan2(y-y_c,x-x_c)$$</p>
+<div style="text-align: center">
+    <strong>Equation 1</strong>. Mapping from Cartesian coordinates to Log-Polar coordinates.  The distance from the fovea along the \(x\) and \(y\) axes is denoted by \(x-x_c\) and \(y-y_c\) respectively.
+</div>
+
 <p><img src="https://alemorm.github.io/foveated-imaging/materials/log_polar.png#center" alt="logpolar" title="Log-Polar Transform"></p>
 <div style="text-align: center">
     <strong>Figure 4</strong>. Log-Polar Transform from Cartesian coordinates.
@@ -177,7 +181,7 @@ $$\theta=atan2(y,x)$$</p>
       <section class="credits-copyright-original">
         Theme by <a href="http://www.jrdnbwmn.com">Jordan Bowman</a>&nbsp;&bull;&nbsp;Generated with <a href="http://gohugo.io/">Hugo v0.72.0</a>
         
-          &nbsp;&bull;&nbsp;[<a href="https://github.com/alemorm/foveated-imaging/tree/b6597b23d2e134963ce2d927c6397799b7d93574">b6597b2</a>]
+          &nbsp;&bull;&nbsp;[<a href="https://github.com/alemorm/foveated-imaging/tree/d659cc451acd034340ac579300ab6ced352553d1">d659cc4</a>]
         
       </section>
     </div>
