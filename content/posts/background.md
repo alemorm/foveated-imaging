@@ -10,7 +10,7 @@ This variable sampling is illustrated in the sampling lattice shown in **Figure 
 $$D=\delta+\alpha E=\alpha(E_0+E)\approx0.01(1.3+E)\degree$$
 
 {{< centertxt >}}
-**Equation 1**. Foveated imaging equation describing sampling interval as a function of distance from fovea.
+**Equation 1**. Foveated imaging equation describing sampling interval as a function of eccentricity from the fovea.
 {{< /centertxt >}}
 
 ![samplelattice]

@@ -19,7 +19,7 @@
       <pubDate>Wed, 09 Dec 2020 11:23:07 -0800</pubDate>
       <author>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</author>
       <guid>https://alemorm.github.io/foveated-imaging/posts/implementation/</guid>
-      <description>This foveated rendering web application was implemented with JavaScript, allowing users to upload an image and visualize the effect of foveated rendering with the fovea located at their cursor position. The basic idea behind foveated rendering is to produce images with varying resolution centered around the fovea. A simple way to illustrate this effect real-time is to apply low-pass filters (1) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea.</description>
+      <description>Foveated imaging produces images with varying resolution centered around the fovea. The foveated imaging functionality was implemented with JavaScript, allowing users to upload an image and visualize this effect with the fovea located at their cursor position. A simple way to illustrate this effect real-time is to apply low-pass filters (1) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea.</description>
     </item>
     
     <item>

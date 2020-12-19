@@ -65,14 +65,14 @@
     </header>
 
     <section class="post-content">
-        <p>This foveated rendering web application was implemented with <a href="https://alemorm.github.io/foveated-imaging/js/foveate.js">JavaScript</a>, allowing users to upload an image and visualize the effect of foveated rendering with the fovea located at their cursor position. The basic idea behind foveated rendering is to produce images with <a href="https://alemorm.github.io/foveated-imaging/posts/background">varying resolution centered around the fovea</a>. A simple way to illustrate this effect real-time is to apply low-pass filters (1) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea. We provide two different blurring methods, discrete and interpolated, with their differences discussed below.</p>
+        <p>Foveated imaging produces images with <a href="https://alemorm.github.io/foveated-imaging/posts/background">varying resolution centered around the fovea</a>. The foveated imaging functionality was implemented with <a href="https://alemorm.github.io/foveated-imaging/js/foveate.js">JavaScript</a>, allowing users to upload an image and visualize this effect with the fovea located at their cursor position. A simple way to illustrate this effect real-time is to apply low-pass filters (1) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea. We provide two different blurring methods, discrete and interpolated, with their differences discussed below.</p>
 <hr>
 <div style="text-align: center">
     <h3 id="interpolation">Interpolation</h3>
 
 </div>
 
-<p>The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ( \(n_{pixels}>1e^6\) ). The interpolated blurring method smoothes the foveated rendering by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.</p>
+<p>The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ( \(n_{pixels}>1e^6\) ). The interpolated blurring method smoothes the foveated imaging by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.</p>
 <p><img src="https://alemorm.github.io/foveated-imaging/materials/interpolation_arrows.png#center" alt="interpolation" title="Interpolation Types"></p>
 <div style="text-align: center">
     <strong>Figure 2</strong>. Original image with the types of interpolation. Red arrows show regions where different adjacent low-pass filters were applied. Black circles are the fovea location. The interpolated method smoothed out the transition between filters.
@@ -84,7 +84,7 @@
 
 </div>
 
-<p>Iteratively applying low-pass filters to every pixel in an image, potentially performing hundreds of summations to compute the value of each pixel, is computationally demanding. This challenge becomes even greater as the image gets larger, due to the exponential increase in total pixels. To mitigate this issue, we compute a <a href="https://en.wikipedia.org/wiki/Summed-area_table">summed-area table</a> (2) right after loading the image, reducing computation on each pixel to constant time and significantly accelerating the processing time (<strong>Figure 3</strong>).</p>
+<p>Iteratively applying low-pass filters to every pixel in an image, potentially performing hundreds of summations to compute the value of each pixel, is computationally demanding. This challenge becomes even greater as the image gets larger, due to the quadratic increase in total pixels. To mitigate this issue, we compute a <a href="https://en.wikipedia.org/wiki/Summed-area_table">summed-area table</a> (2) right after loading the image, reducing computation on each pixel to constant time and significantly accelerating the processing time (<strong>Figure 3</strong>).</p>
 <p><img src="https://alemorm.github.io/foveated-imaging/materials/summed_area_table.png#center" alt="summedareatable" title="Summed Area Table"></p>
 <div style="text-align: center">
     <strong>Figure 3</strong>. Summed-area table method to compute image pixel sums. This method created an integral image for which every pixel is the inclusive sum of all the pixels above and to the left of it. Different regions can then be calculated as illustrated.
@@ -181,7 +181,7 @@ $$\theta=atan2(y-y_c,x-x_c)$$</p>
       <section class="credits-copyright-original">
         Theme by <a href="http://www.jrdnbwmn.com">Jordan Bowman</a>&nbsp;&bull;&nbsp;Generated with <a href="http://gohugo.io/">Hugo v0.72.0</a>
         
-          &nbsp;&bull;&nbsp;[<a href="https://github.com/alemorm/foveated-imaging/tree/d659cc451acd034340ac579300ab6ced352553d1">d659cc4</a>]
+          &nbsp;&bull;&nbsp;[<a href="https://github.com/alemorm/foveated-imaging/tree/a08ef77b3bcccefa77b3f906f7a5ec412183be77">a08ef77</a>]
         
       </section>
     </div>

@@ -5,13 +5,13 @@ math: true
 mmark: true
 ---
 
-This foveated rendering web application was implemented with [JavaScript][foveatejs], allowing users to upload an image and visualize the effect of foveated rendering with the fovea located at their cursor position. The basic idea behind foveated rendering is to produce images with [varying resolution centered around the fovea][background]. A simple way to illustrate this effect real-time is to apply low-pass filters (1) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea. We provide two different blurring methods, discrete and interpolated, with their differences discussed below.
+Foveated imaging produces images with [varying resolution centered around the fovea][background]. The foveated imaging functionality was implemented with [JavaScript][foveatejs], allowing users to upload an image and visualize this effect with the fovea located at their cursor position. A simple way to illustrate this effect real-time is to apply low-pass filters (1) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea. We provide two different blurring methods, discrete and interpolated, with their differences discussed below.
 
 ---
 
 {{< centertxt >}} ### Interpolation {{< /centertxt >}}
 
-The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ({{< math.inline >}} \(n_{pixels}>1e^6\) {{< /math.inline >}}). The interpolated blurring method smoothes the foveated rendering by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.
+The discrete blurring method calculates the low-pass filter for every pixel based on its distance from the fovea and is recommended for larger images ({{< math.inline >}} \(n_{pixels}>1e^6\) {{< /math.inline >}}). The interpolated blurring method smoothes the foveated imaging by interpolating adjacent low-pass filters with different sizes in order to avoid concentric bands of identical resolution.
 
 ![interpolation]
 
@@ -23,7 +23,7 @@ The discrete blurring method calculates the low-pass filter for every pixel base
 
 {{< centertxt >}} ### Summed Area Tables {{< /centertxt >}}
 
-Iteratively applying low-pass filters to every pixel in an image, potentially performing hundreds of summations to compute the value of each pixel, is computationally demanding. This challenge becomes even greater as the image gets larger, due to the exponential increase in total pixels. To mitigate this issue, we compute a [summed-area table][summedareawiki] (2) right after loading the image, reducing computation on each pixel to constant time and significantly accelerating the processing time (**Figure 3**).
+Iteratively applying low-pass filters to every pixel in an image, potentially performing hundreds of summations to compute the value of each pixel, is computationally demanding. This challenge becomes even greater as the image gets larger, due to the quadratic increase in total pixels. To mitigate this issue, we compute a [summed-area table][summedareawiki] (2) right after loading the image, reducing computation on each pixel to constant time and significantly accelerating the processing time (**Figure 3**).
 
 ![summedareatable]
 

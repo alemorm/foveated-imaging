@@ -21,7 +21,7 @@ let imgData = null
 let originalPixels = null
 let currentPixels = null
 let integralImage = null
-let foveatedradius = 0.05
+let foveatedradius = 0.02
 var useInterp = Boolean(false)
 
 // The image is stored as a 1d array with red first, then green, and blue (with alpha values after)
