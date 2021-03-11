@@ -70,8 +70,8 @@ We computed the [log-polar transformation][logpolarwiki] of the input image (4) 
 [samplelattice]: /content/materials/sampling_lattice.png "Sampling Lattice"
 [background]: /posts/background
 [javasource]: /static/js/foveate.js
-[interpolation]: /materials/interpolation_arrows.png#center "Interpolation Types"
-[summedareatable]: /content/materials/summed_area_table.png#center "Summed Area Table"
+[interpolation]: /content/materials/interpolation_arrows.png# "Interpolation Types"
+[summedareatable]: /content/materials/summed_area_table.png "Summed Area Table"
 [logpolar]: /content/materials/log_polar.png "Log-Polar Transform"
 [lowpasswiki]: https://en.wikipedia.org/wiki/Low-pass_filter
 [summedareawiki]: https://en.wikipedia.org/wiki/Summed-area_table
