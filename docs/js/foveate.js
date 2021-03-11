@@ -1,6 +1,10 @@
 /* DOM setup */
 
+// Get file input element
 const fileinput = document.getElementById('fileinput')
+
+// Get interpolation switch element
+const interpswitch = document.getElementById('interpswitch')
 
 // Used to show the effects of the image edit
 const canvas = document.getElementById('canvas')
@@ -17,7 +21,8 @@ let imgData = null
 let originalPixels = null
 let currentPixels = null
 let integralImage = null
-let foveatedradius = 0.05
+let foveatedradius = 0.02
+var useInterp = Boolean(false)
 
 // The image is stored as a 1d array with red first, then green, and blue (with alpha values after)
 const R_OFFSET = 0
@@ -38,6 +43,16 @@ fileinput.onchange = function (e) {
 
     // Set the src of the new Image() we created in javascript
     srcImage.src = URL.createObjectURL(e.target.files[0])
+  }
+}
+
+// When user changes the interpolation
+interpswitch.onchange = function () {
+  // Check the state of the interpolation switch
+  if (this.checked) {
+    useInterp = Boolean(true)
+  } else {
+    useInterp = Boolean(false)
   }
 }
 
@@ -112,7 +127,6 @@ function getIntegral() {
       integralImage[ind + B_OFFSET] = originalPixels[ind + B_OFFSET] + integralImage[ind2 + B_OFFSET] + integralImage[ind3 + B_OFFSET] - integralImage[ind4 + B_OFFSET]
     }
   } 
-
 }
 
 function showlogPolar() {
@@ -123,11 +137,15 @@ function showlogPolar() {
   // Create transparent (alpha=0) black image data object with same dimensions
   logImage = new ImageData(srcImage.width, srcImage.height)
 
+  // Define log-polar range of distance values
+  // logpolarExp = Math.log(srcImage.width/2)/(srcImage.width/2)
+  // logpolarRange = Array.from(Array(srcImage.width/2), (num, index) => 2**index);
+
   const center_x = Math.floor(srcImage.width/2)
   const center_y = Math.floor(srcImage.height/2)
 
-  // console.log(srcImage.width, srcImage.height)
-  // console.log(center_x, center_y)
+  console.log(srcImage.width, srcImage.height)
+  console.log(center_x, center_y)
 
   // Reset the alpha values to fully opaque for the pixels
   for (let i = 0; i < logImage.data.length; i+=4) {
@@ -184,7 +202,7 @@ function runPipeline(event) {
   // Create a copy of the array of integers with 0-255 range 
   currentPixels = originalPixels.slice()
   
-  var dist, radius, diff
+  var dist, radius
 
   // For every pixel of the src image
   for (let i = 0; i < srcImage.width; i++) {
@@ -197,8 +215,11 @@ function runPipeline(event) {
       dist = Math.hypot(picked_x - i, picked_y - j)
       radius = Math.floor(foveatedradius * dist)
 
-      addBlur(i, j, radius)
-      // addinterpBlur(i, j, radius, dist)
+      if (useInterp) {
+        addinterpBlur(i, j, radius, dist)
+      } else {
+        addBlur(i, j, radius)
+      } 
     }
   }
 
@@ -295,7 +316,7 @@ function cartesian2logPolar(x, y, center_x, center_y) {
   r = Math.sqrt(x_pos**2 + y_pos**2)
   rmin = 1
   rmax = Math.sqrt((srcImage.width/2)**2 + (srcImage.height/2)**2)
-  k = (srcImage.width - 1)/ Math.log(rmax/rmin)
+  k = (srcImage.width - 1)/Math.log(rmax/rmin)
   i = Math.floor(k*Math.log(r/rmin))
   
   // Theta angle in radians

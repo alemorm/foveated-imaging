@@ -7,6 +7,10 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <managingEditor>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</managingEditor>
-    <webMaster>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</webMaster><atom:link href="https://alemorm.github.io/foveated-imaging/categories/index.xml" rel="self" type="application/rss+xml" />
+    <webMaster>alegmoralesm@gmail.com (Alejandro Morales &amp; Liang Shi)</webMaster>
+    
+	<atom:link href="https://alemorm.github.io/foveated-imaging/categories/index.xml" rel="self" type="application/rss+xml" />
+    
+    
   </channel>
 </rss>
