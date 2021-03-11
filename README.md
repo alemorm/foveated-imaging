@@ -3,7 +3,7 @@
 ## Background
 
 The human visual system uses variable resolution sampling centered at the fovea to discard the vast majority of available visual information (**1**). This sampling scheme takes advantage of the high density of photoreceptors at the fovea to acquire high resolution information where the gaze is directed, while keeping more eccentric, or peripheral, visual information at a lower resolution. This creates a nearly scaling-invariant system that preserves semantic information about the object visualized as long as the focus is in the same place.
-This variable sampling is illustrated in the sampling lattice shown in **Figure 1** from Van Essen and Anderson (**1**). Additionally, the formula below describes the relationship between eccentricity ({{< math.inline >}} \(E\) {{< /math.inline >}}), defined as angular distance from the center of focus, and sampling interval ({{< math.inline >}} \(D\) {{< /math.inline >}}). The slope ({{< math.inline >}} \(\alpha\) {{< /math.inline >}}) is estimated based on psychophysical data from the primate retina.
+This variable sampling is illustrated in the sampling lattice shown in **Figure 1** from Van Essen and Anderson (**1**). Additionally, the formula below describes the relationship between eccentricity $E$, defined as angular distance from the center of focus, and sampling interval $D$. The slope $\alpha$ is estimated based on psychophysical data from the primate retina.
 
 $$D=\delta+\alpha E=\alpha(E_0+E)\approx0.01(1.3+E)\degree$$
 
@@ -34,8 +34,8 @@ Applying a mean filter to a pixel potentially means performing hundreds of summa
 (1) David Van Essen and Charles H. Anderson. Information Processing Strategies and Pathways in the Primate Visual System. Van Essen and Anderson. 1995
 
 <!-- Links -->
-[foveatedsite]: https://alemorm.github.io/foveated-imaging/ 
-[samplelattice]: /materials/sampling_lattice.png "Sampling Lattice"
+[foveatedsite]: https://alemorm.github.io/foveated-imaging/
+[samplelattice]: /content/materials/sampling_lattice.png "Sampling Lattice"
 [background]: /posts/background
 [javasource]: /static/js/foveate.js
-[summedareatable]: /materials/summed_area_table.png "Summed Area Table"
+[summedareatable]: /content/materials/summed_area_table.png "Summed Area Table"
