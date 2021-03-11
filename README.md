@@ -5,7 +5,7 @@
 The human visual system uses variable resolution sampling centered at the fovea to discard the vast majority of available visual information (1). This sampling scheme takes advantage of the high density of photoreceptors at the fovea to acquire high resolution information where the gaze is directed, while keeping more eccentric, or peripheral, visual information at a lower resolution. This creates a nearly scaling-invariant system that preserves semantic information about the object visualized as long as the focus is in the same place.
 This variable sampling is illustrated in the sampling lattice shown in **Figure 1** from Van Essen and Anderson (1). Additionally, the formula below describes the relationship between eccentricity (*E*), defined as angular distance from the center of focus, and sampling interval (*D*). The slope (*&delta;*) is estimated based on psychophysical data from the primate retina.
 
-D=&delta;+&alpha;E = &alpha;(E<sub>o</sub>+E)&approx;0.01(1.3+E)&deg;
+D=&delta;+&alpha;E=&alpha;(E<sub>o</sub>+E)&approx;0.01(1.3+E)&deg;
 
 ---
 
@@ -45,9 +45,9 @@ Iteratively applying low-pass filters to every pixel in an image, potentially pe
 
 We computed the [log-polar transformation][logpolarwiki] of the input image (4) to illustrate the projection performed in the primary visual cortex. The mapping from Cartesian coordinates to log-polar coordinates is shown in **Equation 1** and **Figure 4**.
 
-&rho;=ln((x-x<sub>c</sub>)<sup>2</sup> + (y-y<sub>c</sub>)<sup>2</sup>)<sup>&half;</sup>
+&rho;=ln((x-x<sub>c</sub>)<sup>2</sup>+(y-y<sub>c</sub>)<sup>2</sup>)<sup>&half;</sup>
 
-&theta;=atan2(y-y<sub>c</sub>,x-x<sub>c</sub>)`*
+&theta;=atan2(y-y<sub>c</sub>,x-x<sub>c</sub>)
 
 **Equation 1**. Mapping from Cartesian coordinates to Log-Polar coordinates. The distance from the fovea along the *x* and *y* axes is denoted by *x-x<sub>c</sub>* and *y-y<sub>c</sub>* respectively.
 
