@@ -17,7 +17,7 @@ D=&delta;+&alpha;E=&alpha;(E<sub>o</sub>+E)&approx;0.01(1.3+E)&deg;
 
 ## Implementation
 
-Foveated imaging produces images with [varying resolution centered around the fovea][background]. The foveated imaging functionality was implemented with [JavaScript][foveatejs], allowing users to upload an image and visualize this effect with the fovea located at their cursor position. A simple way to illustrate this effect real-time is to apply low-pass filters (2) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea. We provide two different blurring methods, discrete and interpolated, with their differences discussed below.
+Foveated imaging produces images with varying resolution centered around the fovea. The foveated imaging functionality was implemented with [JavaScript][javasource], allowing users to upload an image and visualize this effect with the fovea located at their cursor position. A simple way to illustrate this effect real-time is to apply low-pass filters (2) to each pixel on the image, with the filter size dependent on the pixel distance from the fovea. Therefore, pixels farther from the fovea appear blurrier than pixels closer to the fovea. We provide two different blurring methods, discrete and interpolated, with their differences discussed below.
 
 ---
 
@@ -68,7 +68,6 @@ We computed the [log-polar transformation][logpolarwiki] of the input image (4) 
 <!-- Links -->
 [foveatedsite]: https://alemorm.github.io/foveated-imaging/
 [samplelattice]: /content/materials/sampling_lattice.png "Sampling Lattice"
-[background]: /posts/background
 [javasource]: /static/js/foveate.js
 [interpolation]: /content/materials/interpolation_arrows.png# "Interpolation Types"
 [summedareatable]: /content/materials/summed_area_table.png "Summed Area Table"
